@@ -3,17 +3,19 @@ import os
 import sys
 
 # Configure the root directory path
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
+sys.path.append(parent_dir)
 
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
+from airflow.operators.short_circuit_operator import ShortCircuitOperator
 
-from src.extract.extraction import get_column_names, get_teams, get_data_frame
+from src.extract.extraction import get_column_names, get_teams, get_data_frame, daily_check
 from src.transform.transformation import transform_data
 from src.load.loading import load_data
-from tests.data_quality_check import check_data_contract
+from data_quality_tests.data_quality_check import check_data_contract
 from utils.database import db_connection, save_to_mysql
 
 
@@ -33,14 +35,25 @@ dag = DAG(
     default_args= default_args,
     description = 'EPL Table Scraper',
     start_date = airflow.utils.dates.days_ago(0),
-    schedule_interval = None # Saturdays and Sundays at 20:00
+    # schedule_interval = None 
+    schedule_interval = '@daily' 
 )
 
+teams = None
+def trigger_pipeline() -> bool:  
+    teams = get_teams()
+    games_played_db = daily_check(db, cursor)
+    games_played_table = sum([int(team[2]) for team in teams])
+    
+    return games_played_db != games_played_table 
+
 # Get functions from scripts directory
-def run_function(function_name):
+def run_function(function_name: str) -> None:
+    transformed_data = None 
+    
     if function_name == 'extraction':
         column_names = get_column_names()
-        teams = get_teams()
+        # teams = get_teams()
         extracted_data = get_data_frame(column_names, teams)
         save_to_mysql(db, cursor, extracted_data)
         
@@ -71,11 +84,18 @@ def run_function(function_name):
         raise ValueError(f"Function {function_name} not found")
     
 # Dag tasks
-start_task = BashOperator(
-    task_id='start',
-    bash_command='echo "Pipeline started"',
-    dag=dag
-)   
+# start_task = BashOperator(
+#     task_id='start',
+#     bash_command='echo "Pipeline started"',
+#     dag=dag
+# )   
+
+# ShortCircuit operator to check if update is needed
+check_update_needed = ShortCircuitOperator(
+    task_id='check_update_needed',
+    python_callable=trigger_pipeline,
+    dag=dag,
+)
 
 data_extraction = PythonOperator(
     task_id='extraction',
@@ -113,12 +133,12 @@ transformed_data_quality = PythonOperator(
     dag=dag,
 )
 
-end_task = BashOperator(
-    task_id='end',
-    bash_command='echo "Pipeline completed"',
-    dag=dag,
-    # on_success_callback=success_alert
-)  
+# end_task = BashOperator(
+#     task_id='end',
+#     bash_command='echo "Pipeline completed"',
+#     dag=dag,
+#     # on_success_callback=success_alert
+# )  
 
 # Data pipeline workflow
-start_task >> data_extraction >> extracted_data_quality >> data_transformation >> data_loading >> transformed_data_quality >> end_task
+check_update_needed >> data_extraction >> extracted_data_quality >> data_transformation >> data_loading >> transformed_data_quality 

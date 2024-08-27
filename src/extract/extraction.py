@@ -66,3 +66,22 @@ def get_data_frame(column_names: list[str], data: list[list]) -> pd.DataFrame:
     df[numeric_columns] = df[numeric_columns].apply(pd.to_numeric)
 
     return df
+
+# Check if table if up to date.
+def daily_check(db:object, cursor:object) -> int:
+    try:
+        # Fetch all data from the table
+        table_name = 'premier_league_table'
+        query = f'SELECT GP FROM {table_name};'
+        cursor.execute(query)
+        
+        # Fetch all rows
+        rows = cursor.fetchall()
+        tot_played = sum(row[0] for row in rows)
+        
+        return tot_played
+    except Exception as e:
+        print(f'Error: {e}')
+        db.rollback()
+        db.close()
+        cursor.close()

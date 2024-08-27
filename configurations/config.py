@@ -5,13 +5,14 @@ from dotenv import dotenv_values
 
 # Database configuration
 config = dotenv_values('.env')
+host=config.get('host')
 password = config.get('password')
 user_name = config.get('user')
 database = config.get('database')
 
 # Path configuration
 current_dir = os.path.dirname(os.path.abspath(__file__))
-tests_results_dir = os.path.join(current_dir, '../tests/tests_results')
+tests_results_dir = os.path.join(current_dir, '../data_quality_tests/tests_results')
     
 # Create the project configuration
 project_config = DataContextConfig(
@@ -21,7 +22,8 @@ project_config = DataContextConfig(
             'execution_engine': {
                 'module_name': 'great_expectations.execution_engine',
                 'class_name': 'SqlAlchemyExecutionEngine',
-                'connection_string': f'mysql+pymysql://{user_name}:{password}@127.0.0.1:3306/{database}'
+                'connection_string': f'mysql+pymysql://{user_name}:{password}@{host}:3306/{database}'
+                # 'connection_string': f'mysql+pymysql://{user_name}:{password}@127.0.0.1:3306/{database}'
             },
             'data_connectors': {
                 'default_inferred_data_connector_name': {
