@@ -11,7 +11,7 @@ def load_data(db:object, cursor:object, data:pd.DataFrame) -> None:
         # Create the table
         table_name = 'transformed_premier_league_table'
         cursor.execute(f'''
-        CREATE TABLE {table_name} (
+        CREATE TABLE IF NOT EXISTS {table_name} (
             position INT PRIMARY KEY,
             team_name VARCHAR(50),
             games_played INT,
@@ -26,10 +26,25 @@ def load_data(db:object, cursor:object, data:pd.DataFrame) -> None:
         ''')
 
         data_to_insert = [tuple(row) for index, row in data.iterrows()]
-        sql = f'''INSERT INTO {table_name} (
-            position, team_name, games_played, won, drawn, lost, goals_scored, goals_conceded, goal_difference, points) VALUES (
-                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
-        cursor.executemany(sql, data_to_insert)
+        
+        query = f'''
+            INSERT INTO {table_name} 
+            (position, team_name, games_played, won, drawn, lost, goals_scored, goals_conceded, goal_difference, points) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE
+            team_name = VALUES(team_name),
+            games_played = VALUES(games_played),
+            won = VALUES(won),
+            drawn = VALUES(drawn),
+            lost = VALUES(lost),
+            goals_scored = VALUES(goals_scored),
+            goals_conceded = VALUES(goals_conceded),
+            goal_difference = VALUES(goal_difference),
+            points = VALUES(points)
+        '''
+        
+        # Insert data into the table
+        cursor.executemany(query, data_to_insert)
         db.commit()
 
         print('Data inserted successfully')

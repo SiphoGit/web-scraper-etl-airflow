@@ -1,6 +1,8 @@
 import pandas as pd
 import sys
 import os
+import mysql.connector
+
 
 # Configure the root directory path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
@@ -68,20 +70,23 @@ def get_data_frame(column_names: list[str], data: list[list]) -> pd.DataFrame:
     return df
 
 # Check if table if up to date.
-def daily_check(db:object, cursor:object) -> int:
+def daily_check(db: object, cursor: object) -> int:
     try:
-        # Fetch all data from the table
         table_name = 'premier_league_table'
         query = f'SELECT GP FROM {table_name};'
         cursor.execute(query)
-        
-        # Fetch all rows
         rows = cursor.fetchall()
-        tot_played = sum(row[0] for row in rows)
         
-        return tot_played
+        return sum(row[0] for row in rows)
+    except mysql.connector.Error as err:
+        if err.errno == 1146:  # Error number for "Table doesn't exist"
+            print(f"Table '{table_name}' does not exist.")
+            return 0
+        else:
+            print(f'Error: {err}')
+            db.close()
+            cursor.close()
+            raise
     except Exception as e:
-        print(f'Error: {e}')
-        db.rollback()
-        db.close()
-        cursor.close()
+        print(f'Unexpected error: {e}')
+        raise
