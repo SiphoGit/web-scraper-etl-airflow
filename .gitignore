@@ -27,6 +27,7 @@ share/python-wheels/
 *.egg
 MANIFEST
 *.cfg
+tests_results/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -122,6 +123,8 @@ celerybeat.pid
 
 # SageMath parsed files
 *.sage.py
+*.json
+
 
 # Environments
 .env
