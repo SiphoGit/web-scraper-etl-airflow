@@ -1,21 +1,21 @@
 position,team_name,games_played,won,drawn,lost,goals_scored,goals_conceded,goal_difference,points
-1,Manchester City,2,2,0,0,6,1,5,6
-2,Brighton & Hove Albion,2,2,0,0,5,1,4,6
-3,Arsenal,2,2,0,0,4,0,4,6
-4,Liverpool,2,2,0,0,4,0,4,6
-5,Tottenham Hotspur,2,1,1,0,5,1,4,4
-6,Newcastle United,2,1,1,0,2,1,1,4
-7,Nottingham Forest,2,1,1,0,2,1,1,4
-8,Chelsea,2,1,0,1,6,4,2,3
-9,West Ham United,2,1,0,1,3,2,1,3
-10,Fulham,2,1,0,1,2,2,0,3
-11,Manchester United,2,1,0,1,2,2,0,3
-12,Aston Villa,2,1,0,1,2,3,-1,3
-13,Brentford,2,1,0,1,2,3,-1,3
-14,Bournemouth,2,0,2,0,2,2,0,2
-15,Leicester City,2,0,1,1,2,3,-1,1
-16,Southampton,2,0,0,2,0,2,-2,0
-17,Crystal Palace,2,0,0,2,1,4,-3,0
-18,Ipswich Town,2,0,0,2,1,6,-5,0
-19,Wolverhampton,2,0,0,2,2,8,-6,0
-20,Everton,2,0,0,2,0,7,-7,0
+1,Manchester City,3,3,0,0,9,2,7,9
+2,Liverpool,3,3,0,0,7,0,7,9
+3,Brighton & Hove Albion,3,2,1,0,6,2,4,7
+4,Arsenal,3,2,1,0,5,1,4,7
+5,Newcastle United,3,2,1,0,4,2,2,7
+6,Brentford,3,2,0,1,5,4,1,6
+7,Aston Villa,3,2,0,1,4,4,0,6
+8,Bournemouth,3,1,2,0,5,4,1,5
+9,Nottingham Forest,3,1,2,0,3,2,1,5
+10,Tottenham Hotspur,3,1,1,1,6,3,3,4
+11,Chelsea,3,1,1,1,7,5,2,4
+12,Fulham,3,1,1,1,3,3,0,4
+13,West Ham United,3,1,0,2,4,5,-1,3
+14,Manchester United,3,1,0,2,2,5,-3,3
+15,Leicester City,3,0,1,2,3,5,-2,1
+16,Crystal Palace,3,0,1,2,2,5,-3,1
+17,Ipswich Town,3,0,1,2,2,7,-5,1
+18,Wolverhampton,3,0,1,2,3,9,-6,1
+19,Southampton,3,0,0,3,1,5,-4,0
+20,Everton,3,0,0,3,2,10,-8,0
