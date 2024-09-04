@@ -23,7 +23,6 @@ project_config = DataContextConfig(
                 'module_name': 'great_expectations.execution_engine',
                 'class_name': 'SqlAlchemyExecutionEngine',
                 'connection_string': f'mysql+pymysql://{user_name}:{password}@{host}:3306/{database}'
-                # 'connection_string': f'mysql+pymysql://{user_name}:{password}@127.0.0.1:3306/{database}'
             },
             'data_connectors': {
                 'default_inferred_data_connector_name': {
