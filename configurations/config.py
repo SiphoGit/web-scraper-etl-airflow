@@ -5,7 +5,7 @@ from dotenv import dotenv_values
 
 # Database configuration
 config = dotenv_values('.env')
-host=config.get('host')
+host='host.docker.internal'
 password = config.get('password')
 user_name = config.get('user')
 database = config.get('database')
